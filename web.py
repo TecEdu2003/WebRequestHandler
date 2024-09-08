@@ -32,17 +32,25 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             # Obtener el parámetro 'autor' de la query string
             autor = query.get('autor', 'Desconocido')
             return f"<h1>Proyecto: {proyecto} Autor: {autor}</h1>"
+        elif path == '/' and not None:
+            try:
+                with open('home.html', 'r') as file:
+                    return file.read()
+            except FileNotFoundError:
+                return "<h1>Error 404: Página no encontrada</h1>"
         else:
-            return f"""
-        <h1> Hola Web </h1>
-        <p> URL Parse Result : {self.url()}         </p>
-        <p> Path Original: {self.path}         </p>
-        <p> Headers: {self.headers}      </p>
-        <p> Query: {self.query_data()}   </p>
-        <h1>Ruta Solicitada: {path}</h1>
-        <p>Host: {host}</p>
-        <p>User-Agent: {user_agent}</p>
-        """
+            return f"<h1>Error 404: Página no encontrada</h1>"
+
+            #return f"""
+            #<h1> Hola Web </h1>
+            #<p> URL Parse Result : {self.url()}         </p>
+            #<p> Path Original: {self.path}         </p>
+            #<p> Headers: {self.headers}      </p>
+            #<p> Query: {self.query_data()}   </p>
+            #<h1>Ruta Solicitada: {path}</h1>
+            #<p>Host: {host}</p>
+            #<p>User-Agent: {user_agent}</p>
+         
 
 
 if __name__ == "__main__":
