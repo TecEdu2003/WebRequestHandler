@@ -22,34 +22,27 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(self.get_response(host, user_agent, path).encode("utf-8"))
 
     def get_response(self,host, user_agent, path):
-        query = self.query_data()
-        # Extraer la parte antes del '?'
-        path_without_query = path.split('?')[0]
+        contenido = {
+            '/': f"""<html>
+            <h1> Hola Web </h1>
+            <p> URL Parse Result : {self.url()}         </p>
+            <p> Path Original: {self.path}         </p>
+            <p> Headers: {self.headers}      </p>
+            <p> Query: {self.query_data()}   </p>
+            <h1>Ruta Solicitada: {path}</h1>
+            <p>Host: {host}</p>
+            <p>User-Agent: {user_agent}</p>
+            </html>""",
+            '/proyecto/web-uno': "<html><h1>Proyecto: web-uno :]</h1></html>",
+            '/proyecto/web-dos': "<html><h1>Proyecto: web-dos :)</h1></html>",
+            '/proyecto/web-tres': "<html><h1>Proyecto: web-tres :/</h1></html>",
+        }
         
-        # Extraer la parte después del último '/'
-        if path_without_query.startswith("/proyecto/"):
-            proyecto = path_without_query.split('/')[-1]
-            # Obtener el parámetro 'autor' de la query string
-            autor = query.get('autor', 'Desconocido')
-            return f"<h1>Proyecto: {proyecto} Autor: {autor}</h1>"
-        elif path == '/' and not None:
-            try:
-                with open('home.html', 'r') as file:
-                    return file.read()
-            except FileNotFoundError:
-                return "<h1>Error 404: Página no encontrada</h1>"
-        else:
-            return f"<h1>Error 404: Página no encontrada</h1>"
+        return contenido.get(path, "<h1>Error 404: Página no encontrada</h1>")
 
-            #return f"""
-            #<h1> Hola Web </h1>
-            #<p> URL Parse Result : {self.url()}         </p>
-            #<p> Path Original: {self.path}         </p>
-            #<p> Headers: {self.headers}      </p>
-            #<p> Query: {self.query_data()}   </p>
-            #<h1>Ruta Solicitada: {path}</h1>
-            #<p>Host: {host}</p>
-            #<p>User-Agent: {user_agent}</p>
+        
+ 
+            
          
 
 
