@@ -1,6 +1,27 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qsl, urlparse
 
+# Abre el archivo HTML y lee su contenido
+with open('home.html', 'r', encoding='utf-8') as file:
+    html_home = file.read()
+with open('1.html', 'r', encoding='utf-8') as file:
+    html_1 = file.read()
+
+# Crea el diccionario y almacena el contenido del HTML en una clave
+diccionario = {
+    #Página Home, lee el contenido del archivo home.html
+    '/': html_home ,
+    #Página 1, lee el contenido del archivo 1.html
+    '/proyecto/1': html_1,
+    #Página 2, contiene hipervínculos para acceder las demás páginas
+    '/proyecto/2': f"""<html><h3><a href="/"> Home </a></h3>
+    <h3><a href="/proyecto/1"> Proyecto 1 </a></h3>
+    <h3><a href="/proyecto/3"> Proyecto 3</a></h3></html>""",
+    #Página 3, contiene hipervínculos para acceder las demás páginas
+    '/proyecto/3':f"""<html><h3><a href="/"> Home </a></h3>
+    <h3><a href="/proyecto/1"> Proyecto 1 </a></h3>
+    <h3><a href="/proyecto/2"> Proyecto 2</a></h3></html>""",
+}
 
 class WebRequestHandler(BaseHTTPRequestHandler):
     def url(self):
@@ -19,33 +40,14 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Server", "CustomPythonServer/1.0")
         self.send_header("Date", self.date_time_string())
         self.end_headers()
-        self.wfile.write(self.get_response(host, user_agent, path).encode("utf-8"))
-
-    def get_response(self,host, user_agent, path):
-        contenido = {
-            '/': f"""<html>
-            <h1> Hola Web </h1>
-            <p> URL Parse Result : {self.url()}         </p>
-            <p> Path Original: {self.path}         </p>
-            <p> Headers: {self.headers}      </p>
-            <p> Query: {self.query_data()}   </p>
-            <h1>Ruta Solicitada: {path}</h1>
-            <p>Host: {host}</p>
-            <p>User-Agent: {user_agent}</p>
-            </html>""",
-            '/proyecto/web-uno': "<html><h1>Proyecto: web-uno :]</h1></html>",
-            '/proyecto/web-dos': "<html><h1>Proyecto: web-dos :)</h1></html>",
-            '/proyecto/web-tres': "<html><h1>Proyecto: web-tres :/</h1></html>",
-        }
         
-        return contenido.get(path, "<h1>Error 404: Página no encontrada</h1>")
+        #Ahora usamos el diccionario para reflejar el contenido de las direcciones, en caso de que no exista muestra  el Error 404
+        response_content = diccionario.get(self.path, "<html><h1>404 Not Found</h1></html>")
+        self.wfile.write(response_content.encode("utf-8")) 
 
         
  
             
-         
-
-
 if __name__ == "__main__":
     puerto = 8000
     print("Starting server on port {puerto}")
