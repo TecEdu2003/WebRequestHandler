@@ -51,5 +51,5 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     puerto = 8000
     print("Starting server on port {puerto}")
-    server = HTTPServer(("localhost", puerto), WebRequestHandler)
+    server = HTTPServer(("0.0.0.0", puerto), WebRequestHandler)
     server.serve_forever()
